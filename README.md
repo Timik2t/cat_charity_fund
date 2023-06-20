@@ -87,7 +87,9 @@ uvicorn app.main:app --reload
 
 http://127.0.0.1:8000
 
-### API [Интерактивная документация](http://127.0.0.1:8000/swagger "Swagger")
+### API 
+
+[Интерактивная документация](http://127.0.0.1:8000/swagger "Swagger")
 
 
 ### Автор

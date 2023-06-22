@@ -3,8 +3,10 @@ from typing import Optional
 
 from pydantic import BaseModel, Extra, Field, PositiveInt
 
-from app.constants import (MAX_CHARITY_PROJECT_NAME, MIN_CHARITY_PROJECT_NAME,
-                           MIN_CHARITY_PROJECT_DESCRIPTION)
+from app.constants import (
+    MAX_CHARITY_PROJECT_NAME, MIN_CHARITY_PROJECT_NAME,
+    MIN_CHARITY_PROJECT_DESCRIPTION
+)
 
 
 class CharityProjectBase(BaseModel):

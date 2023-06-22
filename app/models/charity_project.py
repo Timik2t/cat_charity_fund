@@ -4,6 +4,9 @@ from app.core.db import Base, DonationsCharityProjectMixin
 from app.constants import MAX_CHARITY_PROJECT_NAME
 
 
+REPRESENTATION_CHARITY_PROJECT = 'Фонд {name}'
+
+
 class CharityProject(Base, DonationsCharityProjectMixin):
     name = Column(
         String(MAX_CHARITY_PROJECT_NAME),
@@ -11,3 +14,6 @@ class CharityProject(Base, DonationsCharityProjectMixin):
         nullable=False
     )
     description = Column(Text)
+
+    def __repr__(self) -> str:
+        return REPRESENTATION_CHARITY_PROJECT.format(self.name)

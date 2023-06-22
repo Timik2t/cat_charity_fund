@@ -1,4 +1,3 @@
-# app/core/user.py
 from typing import Optional, Union
 
 from fastapi import Depends, Request
@@ -15,6 +14,12 @@ from app.models.user import User
 from app.schemas.user import UserCreate
 
 
+JWT_TOKEN_LIFETIME_SECONDS = 3600
+INVALID_PASSWORD_LENGTH = 'Password should be at least 3 characters'
+INVALID_PASSWORD_EMAIL = 'Password should not contain e-mail'
+USER_REGISTERED = 'Пользователь {email} зарегистрирован.'
+
+
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
     yield SQLAlchemyUserDatabase(session, User)
 
@@ -23,7 +28,10 @@ bearer_transport = BearerTransport(tokenUrl='auth/jwt/login')
 
 
 def get_jwt_strategy() -> JWTStrategy:
-    return JWTStrategy(secret=settings.secret, lifetime_seconds=3600)
+    return JWTStrategy(
+        secret=settings.secret,
+        lifetime_seconds=JWT_TOKEN_LIFETIME_SECONDS
+    )
 
 
 auth_backend = AuthenticationBackend(
@@ -42,18 +50,17 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     ) -> None:
         if len(password) < 3:
             raise InvalidPasswordException(
-                reason='Password should be at least 3 characters'
+                reason=INVALID_PASSWORD_LENGTH
             )
         if user.email in password:
             raise InvalidPasswordException(
-                reason='Password should not contain e-mail'
+                reason=INVALID_PASSWORD_EMAIL
             )
 
     async def on_after_register(
             self, user: User, request: Optional[Request] = None
     ):
-        # Вместо print здесь можно было бы настроить отправку письма.
-        print(f'Пользователь {user.email} зарегистрирован.')
+        print(USER_REGISTERED.format(email=user.email))
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):

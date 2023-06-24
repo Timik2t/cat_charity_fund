@@ -1,19 +1,14 @@
 from sqlalchemy import Column, String, Text
 
-from app.core.db import Base, DonationsCharityProjectMixin
 from app.constants import MAX_CHARITY_PROJECT_NAME
 
+from .base import DonationsCharityProjectAbstract
 
-REPRESENTATION_CHARITY_PROJECT = 'Фонд {name}'
 
-
-class CharityProject(Base, DonationsCharityProjectMixin):
+class CharityProject(DonationsCharityProjectAbstract):
     name = Column(
         String(MAX_CHARITY_PROJECT_NAME),
         unique=True,
         nullable=False
     )
     description = Column(Text)
-
-    def __repr__(self) -> str:
-        return REPRESENTATION_CHARITY_PROJECT.format(self.name)

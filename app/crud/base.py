@@ -1,5 +1,5 @@
 from typing import Generic, List, Optional, Type, TypeVar
-
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -43,4 +43,35 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         session.add(db_object)
         await session.commit()
         await session.refresh(db_object)
+        return db_object
+
+    async def update(
+        self,
+        db_object: ModelType,
+        object_in: UpdateSchemaType,
+        session: AsyncSession,
+    ) -> ModelType:
+        obj_data = jsonable_encoder(db_object)
+        update_data = object_in.dict(exclude_unset=True)
+
+        for field in obj_data:
+            if field in update_data:
+                setattr(db_object, field, update_data[field])
+
+        session.add(db_object)
+
+        await session.commit()
+
+        await session.refresh(db_object)
+        return db_object
+
+    async def remove(
+        self,
+        db_object: ModelType,
+        session: AsyncSession,
+    ) -> ModelType:
+        await session.delete(db_object)
+
+        await session.commit()
+
         return db_object

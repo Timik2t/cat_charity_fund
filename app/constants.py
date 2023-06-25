@@ -1,5 +1,4 @@
 MAX_CHARITY_PROJECT_NAME = 100
-MIN_CHARITY_PROJECT_NAME = 1
-MIN_CHARITY_PROJECT_DESCRIPTION = 1
+MIN_CHARITY_PROJECT_NAME_DESCRIPTION = 1
 
-DEFAULT_DB_URL = 'sqlite+aiosqlite:///./charity_fund.db'
+DEFAULT_DB_URL = 'sqlite+aiosqlite:///./charity_fund.sqlite'

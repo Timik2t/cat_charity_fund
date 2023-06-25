@@ -12,55 +12,43 @@ async def get_not_invested_objects(
     model_in: Union[CharityProject, Donation],
     session: AsyncSession
 ) -> List[Union[CharityProject, Donation]]:
-    db_objects = await session.execute(
-        select(
-            model_in
-        ).where(
-            model_in.fully_invested == false()
-        ).order_by(
-            model_in.create_date
-        )
-    )
-    return db_objects.scalars().all()
-
-
-async def close_invested_object(
-    obj_to_close: Union[CharityProject, Donation],
-) -> None:
-    obj_to_close.fully_invested = True
-    obj_to_close.close_date = datetime.now()
+    return await session.execute(
+        select(model_in)
+        .where(model_in.fully_invested == false())
+        .order_by(model_in.create_date)
+    ).scalars().all()
 
 
 async def execute_investment_process(
-    current_object: Union[CharityProject, Donation],
-    session: AsyncSession
-):
-    if current_object is None:
-        return current_object
+    target: Union[CharityProject, Donation],
+    sources: List[Union[CharityProject, Donation]]
+) -> Union[CharityProject, Donation]:
+    if target is None:
+        return target
 
-    db_model = CharityProject if isinstance(current_object, Donation) else Donation
-    open_objects = await get_not_invested_objects(db_model, session)
-    available_amount = current_object.full_amount
+    available_amount = target.full_amount
 
-    for open_object in open_objects:
-        if open_object.fully_invested:
+    for source in sources:
+        if source.fully_invested:
             continue
 
-        need_to_invest = open_object.full_amount - open_object.invested_amount
+        need_to_invest = source.full_amount - source.invested_amount
         to_invest = min(need_to_invest, available_amount)
 
-        open_object.invested_amount += to_invest
-        current_object.invested_amount += to_invest
+        source.invested_amount += to_invest
+        target.invested_amount += to_invest
         available_amount -= to_invest
 
-        if open_object.full_amount == open_object.invested_amount:
-            await close_invested_object(open_object)
+        if source.full_amount == source.invested_amount:
+            source.fully_invested = True
+            source.close_date = datetime.now()
         elif available_amount == 0:
-            await close_invested_object(current_object)
+            target.fully_invested = True
+            target.close_date = datetime.now()
             break
 
-    if current_object.full_amount == current_object.invested_amount:
-        await close_invested_object(current_object)
+    if target.full_amount == target.invested_amount:
+        target.fully_invested = True
+        target.close_date = datetime.now()
 
-    await session.commit()
-    return current_object
+    return target

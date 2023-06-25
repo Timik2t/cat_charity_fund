@@ -65,32 +65,5 @@ class CRUDCharityProject(
         )
         return project_invested_amount.scalars().first()
 
-    async def update(
-        self,
-        db_object,
-        object_in,
-        session: AsyncSession
-    ):
-        obj_data = jsonable_encoder(db_object)
-        update_data = object_in.dict(exclude_unset=True)
-
-        for field in obj_data:
-            if field in update_data:
-                setattr(db_object, field, update_data[field])
-
-        session.add(db_object)
-        await session.commit()
-        await session.refresh(db_object)
-        return db_object
-
-    async def remove(
-        self,
-        db_object,
-        session: AsyncSession
-    ):
-        await session.delete(db_object)
-        await session.commit()
-        return db_object
-
 
 charityproject_crud = CRUDCharityProject(CharityProject)

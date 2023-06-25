@@ -1,6 +1,5 @@
 from typing import Optional
 
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,17 +16,6 @@ class CRUDCharityProject(
         CharityProjectUpdate
     ]
 ):
-    async def get_charity_project(
-        self,
-        object_id: int,
-        session: AsyncSession
-    ) -> Optional[CharityProject]:
-        charityproject_db = await session.execute(
-            select(CharityProject).where(
-                CharityProject.id == object_id
-            )
-        )
-        return charityproject_db.scalars().first()
 
     async def get_charity_project_id_by_name(
         self,
@@ -41,29 +29,5 @@ class CRUDCharityProject(
         )
         return charity_project.scalars().first()
 
-    async def get_charity_project_close_date(
-        self,
-        project_id: int,
-        session: AsyncSession
-    ):
-        project_close_date = await session.execute(
-            select(CharityProject.close_date).where(
-                CharityProject.id == project_id
-            )
-        )
-        return project_close_date.scalars().first()
 
-    async def get_charity_project_invested_amount(
-        self,
-        project_id: int,
-        session: AsyncSession
-    ):
-        project_invested_amount = await session.execute(
-            select(CharityProject.invested_amount).where(
-                CharityProject.id == project_id
-            )
-        )
-        return project_invested_amount.scalars().first()
-
-
-charityproject_crud = CRUDCharityProject(CharityProject)
+charity_project_crud = CRUDCharityProject(CharityProject)

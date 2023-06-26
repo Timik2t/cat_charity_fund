@@ -19,7 +19,7 @@ from app.schemas.charity_project import (
     CharityProjectDB,
     CharityProjectUpdate,
 )
-from app.services.investment import execute_investment_process
+from app.services.investment import investment_process
 router = APIRouter()
 
 
@@ -51,9 +51,9 @@ async def create_new_charity_project(
         session=session
     )
     session.add_all(
-        execute_investment_process(
+        investment_process(
             new_charity_project,
-            await donation_crud.get_multi_ordered_by_create_date(
+            await donation_crud.get_non_fully_invested_order_by_create(
                 session
             )
         )

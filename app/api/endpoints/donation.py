@@ -9,7 +9,7 @@ from app.crud.donation import donation_crud
 from app.crud.charity_project import charity_project_crud
 from app.models import User
 from app.schemas.donation import DonationCreate, DonationDB
-from app.services.investment import execute_investment_process
+from app.services.investment import investment_process
 
 EXCLUDE_FIELDS = (
     'user_id',
@@ -62,9 +62,9 @@ async def create_donation(
         commit=False
     )
     session.add_all(
-        execute_investment_process(
+        investment_process(
             new_donation,
-            await charity_project_crud.get_multi_ordered_by_create_date(
+            await charity_project_crud.get_non_fully_invested_order_by_create(
                 session
             )
         )

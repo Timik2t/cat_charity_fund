@@ -42,20 +42,18 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_objects = await session.execute(select(self.model))
         return db_objects.scalars().all()
 
-    async def get_multi_ordered_by_create_date(
-            self,
-            session: AsyncSession,
+    async def get_non_fully_invested_order_by_create(
+        self,
+        session: AsyncSession,
     ) -> List[ModelType]:
-        db_obj = await session.execute(
-            select(
-                self.model
-            ).where(
+        db_objects = await session.execute(
+            select(self.model).where(
                 self.model.fully_invested == 0
             ).order_by(
                 asc(self.model.create_date)
             )
         )
-        return db_obj.scalars().all()
+        return db_objects.scalars().all()
 
     async def create(
         self,

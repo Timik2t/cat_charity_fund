@@ -120,6 +120,7 @@
     TOKEN_URI=https://oauth2.googleapis.com/token
     AUTH_PROVIDER_X509_CERT_URL=https://www.googleapis.com/oauth2/v1/certs
     CLIENT_X509_CERT_URL=<ссылка>
+    # Почта, указанная в Google Cloud Platform
     EMAIL=<email пользователя>
     ```
 

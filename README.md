@@ -66,13 +66,13 @@
 
 ## Подготовка и запуск проекта
 
-1. Склонировать репозиторий на локальную машину:
+1. Склонируйте репозиторий на локальную машину:
 
     ```bash
     git clone git@github.com:Timik2t/cat_charity_fund.git
     ```
 
-2. Создать и активировать виртуальное окружение:
+2. Создайте и активируйте виртуальное окружение:
 
     ```bash
     python -m venv venv
@@ -87,27 +87,29 @@
     # Linux
     source venv/bin/activate
     ```
-3. Установить зависимости:
+3. Установите зависимости:
 
     ```bash
     pip install -r requirements.txt
     ```
 
-4. Применить миграции:
+4. Примените миграции:
 
     ```bash
     alembic upgrade head
     ```
 
-5. Создать файл с переменными окружения `.env` и заполнить его данными:
+5. Создайте файл с переменными окружения `.env` и заполните его данными:
 
     ```bash
     APP_TITLE=Фонд QRKot
     APP_DESCRIPTION=Благотворительный фонд поддержки усатых хвостатых
     DATABASE_URL=sqlite+aiosqlite:///./fastapi.db
     SECRET=<секретный ключ>
+    # Почта и пароль суперюзера
     FIRST_SUPERUSER_EMAIL=admin@example.com
     FIRST_SUPERUSER_PASSWORD=admin
+    # Заполните по JSON-файлу ключа
     TYPE=service_account
     PROJECT_ID=atomic-climate-<идентификатор>
     PRIVATE_KEY_ID=<id приватного ключа>
